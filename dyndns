@@ -203,7 +203,7 @@ class URL:
             response_l.append(response)
         elif isinstance(response, list):
             response_l.extend(response)
-        else:
+        elif response is not None:
             sys.exit(f'ERROR: url {self.url}, response must be string or list.')
 
         self.response = [re.compile(s) for s in response_l]
