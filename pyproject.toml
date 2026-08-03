@@ -12,6 +12,7 @@ keywords = ["dns"]
 dynamic = ["version"]
 dependencies = [
   "aiohttp",
+  "ifaddr",
   "platformdirs",
   "tomli >= 1.1.0; python_version < '3.11'",
 ]
