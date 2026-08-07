@@ -10,7 +10,7 @@
 #
 # A [[urls]] entry can have the following values:
 #
-# url (mandatory): The URL of the service. Typically have to add your
+# url (mandatory): The URL of the service. Typically you have to add your
 #   DOMAIN or HOSTNAME and/or your TOKEN or PASSWORD as parameters in
 #   this URL. You can add the placemarkers "<ipv4>" and/or "<ipv6>"
 #   where you want those IP addresses inserted when sent to the service.
@@ -28,6 +28,10 @@
 #   returned). Can be a single string, or a list of regular expression
 #   strings. If any comparison of a string in that list passes, then the
 #   URL message is considered successful. See the examples below.
+#
+# [headers] (optional): This is a dictionary used to pass arbitrary
+#   headers to the HTTP requests used to update the dyndns server.
+#   This can be used to e.g. authenticate with the server.
 #
 # Some example [[urls]] entries follow:
 
@@ -59,6 +63,13 @@
 # [[urls]]
 # url = 'https://www.duckdns.org/update?domains=HOSTNAME&token=TOKEN&ip=<ipv4>&ipv6=<ipv6>'
 # response = '^OK$'
+
+# desec.io: See https://desec.readthedocs.io/en/latest/dyndns/update-api.html.
+# [[urls]]
+# url = "https://update.dedyn.io/?hostname=HOSTNAME&myipv4=<ipv4>&myipv6=<ipv6>"
+# response = "good"
+# [urls.headers]
+# Authorization = "Token TOKEN"
 
 # *** SHOULD NOT NEED TO MODIFY ANY OF THE FOLLOWING SETTINGS ***
 #
