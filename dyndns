@@ -72,10 +72,12 @@ def logerr(msg: str) -> None:
     print(msg, file=sys.stderr, flush=True)
 
 
-async def urlget(session: Session, url: str) -> str | None:
+async def urlget(
+    session: Session, url: str, headers: dict[str, str] | None = None
+) -> str | None:
     "Fetch given url"
     try:
-        async with session.get(url) as response:
+        async with session.get(url, headers=headers) as response:
             response.raise_for_status()
             txt = await response.text()
     except Exception as e:
@@ -171,6 +173,13 @@ class URL:
         if not self.url:
             sys.exit('ERROR: url not defined')
             return
+        headers = conf.get('headers')
+        if isinstance(headers, dict):
+            self.request_headers: dict[str, str] = headers
+        elif headers is not None:
+            sys.exit(f'ERROR: url {self.url}, headers must be a dictionary.')
+        else:
+            self.request_headers = {}
 
         # Record which IP address types we need for this URL
         self.needs = {k for k in ADDRESS_TYPES if self.url and f'<{k}>' in self.url}
@@ -203,7 +212,7 @@ class URL:
             response_l.append(response)
         elif isinstance(response, list):
             response_l.extend(response)
-        else:
+        elif response is not None:
             sys.exit(f'ERROR: url {self.url}, response must be string or list.')
 
         self.response = [re.compile(s) for s in response_l]
@@ -268,7 +277,7 @@ class URL:
             self.session = Session()
 
         # Send to dyndns server
-        response = await urlget(self.session, url)
+        response = await urlget(self.session, url, self.request_headers)
         if response is not None:
             if not self.response or any(s.search(response) for s in self.response):
                 # Update successful, save new record to cache file
