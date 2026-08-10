@@ -1,8 +1,8 @@
-#!/usr/bin/python3
 "Module to convert configuration time values"
 
 from __future__ import annotations
 
+import sys
 from datetime import timedelta
 
 
@@ -33,7 +33,7 @@ def todelta(time_str: str | float) -> timedelta:
         elif timestr.endswith('w'):
             return timedelta(weeks=num)
 
-    raise Exception(f'Do not understand "{time_str}" time format')
+    sys.exit(f'Do not understand "{time_str}" time format')
 
 
 def tosec(time_str: str) -> float:

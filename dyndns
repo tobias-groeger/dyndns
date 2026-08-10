@@ -14,6 +14,7 @@ from collections import deque
 from hashlib import sha256 as hasher
 from ipaddress import IPv4Address, IPv6Address
 from pathlib import Path
+from typing import Any, ClassVar
 
 import platformdirs
 from aiohttp import ClientSession as Session
@@ -88,7 +89,7 @@ async def urlget(
 
 
 class IPSERVER:
-    types = set()
+    types: ClassVar = set()
 
     def __init__(self, name: str, servers: list[str]) -> None:
         "Create IP address type to poll servers"
@@ -165,14 +166,14 @@ class IPSERVER:
 
 
 class URL:
-    allneeds = set()
+    allneeds: ClassVar = set()
 
-    def __init__(self, conf: dict[str, str]) -> None:
+    def __init__(self, conf: dict[str, Any]) -> None:
         "Create URL for sending to dyndns server"
         self.url = conf.get('url')
         if not self.url:
             sys.exit('ERROR: url not defined')
-            return
+
         headers = conf.get('headers')
         if isinstance(headers, dict):
             self.request_headers: dict[str, str] = headers
@@ -184,15 +185,11 @@ class URL:
         # Record which IP address types we need for this URL
         self.needs = {k for k in ADDRESS_TYPES if self.url and f'<{k}>' in self.url}
 
-        auto = conf.get('auto', 'off')
-        auto = 'false' if auto is False else auto.lower()
-        if auto not in OFFSTATES:
-            for k in ADDRESS_TYPES:
-                if k == auto:
-                    self.needs.add(k)
-                    break
-            else:
+        if (auto := conf.get('auto', 'off').lower()) not in OFFSTATES:
+            if auto not in ADDRESS_TYPES:
                 sys.exit(f'ERROR: url {self.url}, auto={auto} not valid.')
+
+            self.needs.add(auto)
 
         if not self.needs:
             sys.exit(f'ERROR: url {self.url} must specify either {ADDRESS_TXT}')
