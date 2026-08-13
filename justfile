@@ -8,7 +8,7 @@ check:
   md-link-checker
 
 doc:
-  update-readme-usage -c ".venv/bin/python {{NAME}}"
+  update-readme-usage -c "python3 {{NAME}}"
 
 format:
   ruff check --select I --fix {{PYFILES}} && ruff format {{PYFILES}}
