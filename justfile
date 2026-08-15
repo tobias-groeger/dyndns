@@ -1,5 +1,5 @@
 NAME := file_name(justfile_dir())
-PYFILES := `echo *.py` + " {{NAME}}"
+PYFILES := `echo *.py` + " " + NAME
 
 check:
   ruff check {{PYFILES}}
@@ -8,7 +8,7 @@ check:
   md-link-checker
 
 doc:
-  update-readme-usage -c "python3 {{NAME}}"
+  update-readme-usage -c ".venv/bin/python {{NAME}}"
 
 format:
   ruff check --select I --fix {{PYFILES}} && ruff format {{PYFILES}}

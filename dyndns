@@ -213,7 +213,7 @@ class URL:
             sys.exit(f'ERROR: url {self.url}, response must be string or list.')
 
         self.response = [re.compile(s) for s in response_l]
-        self.allneeds |= self.needs
+        self.allneeds.update(self.needs)
         self.file = URLCACHE / hasher(self.url.encode()).hexdigest()
         self.session = None
         self.time = None
